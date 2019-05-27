@@ -1,0 +1,5 @@
+https://realpython.com/python-concurrency/
+https://towardsdatascience.com/dataset-creation-and-cleaning-web-scraping-using-python-part-1-33afbf360b6b
+
+https://docs.python.org/3/library/concurrent.futures.html
+https://docs.python.org/2/library/queue.html

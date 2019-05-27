@@ -1,5 +1,5 @@
 import requests
-import time
+import re
 
 from bs4 import BeautifulSoup
 from queue import Queue, Empty
@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urljoin
 
 from models.Book import Book
+from models.Category import Category
 
 class BookScraper:
 
@@ -20,6 +21,16 @@ class BookScraper:
         self.crawl_pages_queue = Queue()
         self.crawl_books_queue = Queue()
 
+    def read_categories(self, page_url):
+        response = self.scrape(page_url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        categories = [
+            Category(category.get_text().strip(), self.link_to_absolute_path(category.get('href')), 'books') 
+            for category
+            in soup.find_all("a", href=re.compile("catalogue/category/books"))
+            if category is not None
+        ]
+
     # metodo en el cual se enconlan los libros a realizar scraping.
     def read_pages(self, page_url):
         next_page = page_url
@@ -30,10 +41,12 @@ class BookScraper:
             if len(next_link):
                 next_page = self.link_to_absolute_path(next_link[0]['href'])
                 page_books = soup.select('article.product_pod > h3 > a[href]')
-                if (len(page_books)):
+                page_books_len = len(page_books)
+                if (page_books_len):
+                    print('INSERT TO QUEUE {} BOOKS FROM PAGE {}'.format(page_books_len, next_page))
                     for page_book in page_books:
                         page_book_url = page_book['href']
-                        print('BOOK ENQUEUED: {}'.format(page_book_url))
+                        # print('BOOK ENQUEUED: {}'.format(page_book_url))
                         self.crawl_books_queue.put(self.link_to_absolute_path(page_book_url))
             else:
                 break
@@ -72,7 +85,12 @@ class BookScraper:
         return res
 
     def run(self):
+        # proceso de lectura de categorias
+        self.read_categories(self.base_url)
+        # proceso de lectura de paginas (sitio principal)
         self.read_pages(self.base_url)
+
+        # proceso de carga de libros encolados para lectura
         while True:
             try:
                 book_url = self.crawl_books_queue.get(timeout=60)

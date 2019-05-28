@@ -39,6 +39,7 @@ class BookScraper:
     def read_pages(self, page_url):
         next_page = page_url
 
+        #TODO: solucionar problema de lectura de solo la primera pagina, convertir en metodo recursivo.
         links = 1
         while links > 0:
             response = self.scrape(next_page)

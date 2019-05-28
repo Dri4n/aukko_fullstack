@@ -5,9 +5,9 @@ from queue import Queue, Empty
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urljoin
 
-from utils import GetPreviousSibling, GetNextSibling
 from models.Book import Book
 from models.Category import Category
+from mappers.BookSoupMapper import BookSoupMapper
 
 class BookScraper:
 
@@ -68,34 +68,17 @@ class BookScraper:
 
     def read_book_info(self, html):
         soup = BeautifulSoup(html, 'html.parser')
-
-        #INFO: definimos las secciones.
-        navegation_section = soup.find('ul', { 'class' : 'breadcrumb' })
-        main_section = soup.find('div', { 'class' : 'product_main' })
-        description_section = soup.find('div', { 'id' : 'product_description' })
-        information_section = soup.find('table', { 'class' : 'table table-striped' })
-        thumbail_section = soup.find('div', { 'id' : 'product_gallery' })
-
-        #INFO: definimos los elementos
-        title_element = main_section.find('h1')
-        category_element = GetPreviousSibling(navegation_section.find('li', { 'class': 'active' }))
-        thumbail_element = thumbail_section.img
-        description_element = GetNextSibling(description_section)
-        
-        book_entity = Book()
-        #INFO: validamos que los elementos contentan valor.
-        if (title_element is not None):
-            book_entity.title = title_element.get_text()
-        if (category_element is not None):
-            book_entity.category = category_element.a.get_text()
-            book_entity.category_url = self.link_to_absolute_path(category_element.a.get('href'))
-        if (description_element is not None):
-            book_entity.description = description_element.get_text()
-        if (thumbail_element is not None):
-            book_entity.thumbail = self.link_to_absolute_path(thumbail_element.get('src'))
-
-        #TODO: leer información desde la sección información
-        #TODO: validar si el libro contiene toda la información necesaria, en caso contrario, dejar como libros con problemas de lectura.
+        mapper = BookSoupMapper(soup)
+        book_entity = Book(
+            mapper.title,
+            mapper.category,
+            self.link_to_absolute_path(mapper.category_url),
+            self.link_to_absolute_path(mapper.thumbail),
+            mapper.price,
+            mapper.stock,
+            mapper.description,
+            mapper.upc
+        )
         self.books_data_set.append(book_entity)
 
     def scrape_book_response(self, res):

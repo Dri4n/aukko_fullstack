@@ -1,8 +1,9 @@
 ## definición base de producto a nivel de busqueda.
 class Product:
-    def __init__(self, title, category, price, description):
+    def __init__(self, title, category, category_url, price, description):
         self.title = title
         self.category = category
+        self.category_url = category_url
         self.price = price
         self.description = description
 

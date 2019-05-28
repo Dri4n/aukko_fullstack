@@ -75,10 +75,10 @@ class BookScraper:
             mapper.category,
             self.link_to_absolute_path(mapper.category_url),
             self.link_to_absolute_path(mapper.thumbail),
-            mapper.price,
-            mapper.stock,
+            mapper.price, #TODO: leer precio
+            mapper.stock, #TODO: leer stock
             mapper.description,
-            mapper.upc
+            mapper.upc #TODO: leer upc
         )
         self.books_data_set.append(book_entity)
 

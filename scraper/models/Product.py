@@ -7,9 +7,6 @@ class Product:
         self.price = price
         self.description = description
 
-    def toString(self):
-        print(self.title)
-
     def __eq__(self, entity):
         if isinstance(entity, Product):
             return self.title == entity.title and self.category == entity.category

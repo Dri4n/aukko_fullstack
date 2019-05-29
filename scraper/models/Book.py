@@ -1,7 +1,4 @@
-from models.Product import Product
-
-# definción de libro, hereda desde producto.
-class Book(Product):
+class Book():
     def __init__ (
         self, 
         title = None, 
@@ -13,7 +10,11 @@ class Book(Product):
         description = None, 
         upc = None
     ):
-        Product.__init__(self, title, category, category_url, price, description)
+        self.title = title
+        self.category = category
+        self.category_url = category_url
+        self.price = price
+        self.description = description
         self.thumbail = thumbail
         self.stock = stock
         self.upc = upc

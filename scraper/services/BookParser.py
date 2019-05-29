@@ -4,11 +4,12 @@ sys.path.append(os.path.abspath(os.path.join('../', '')))
 from data.BookContext import Session, engine, Base
 from data.models.Categories import Category
 from data.models.Books import Book
-Base.metadata.drop_all(engine)
-Base.metadata.create_all(engine)
 
 class BookParser:
     def __init__(self):
+        Base.metadata.drop_all(engine)
+        Base.metadata.create_all(engine)
+        
         self.categories = []
         self.books = []
 
@@ -38,21 +39,20 @@ class BookParser:
         return categories
 
     def save_books(self):
+        db_categories = self.get_db_categories()
         session = Session(bind=engine)
-        session.bulk_save_objects(
-            [
-                Book(
-                    title= book['title'],
-                    category_id = 1,
-                    thumbail_url = book['thumbail'],
-                    price = book['price'],
-                    stock = book['stock'],
-                    description = book['description'],
-                    upc = book['upc']
-                )
-                for book in self.books
-            ]
-        )
+        session.bulk_save_objects([
+            Book(
+                title = book['title'],
+                category_id = next(filter(lambda x: x.url == book['category_url'], db_categories), Category).id,
+                thumbail_url = book['thumbail'],
+                price = book['price'],
+                stock = book['stock'],
+                description = book['description'],
+                upc = book['upc']
+            )
+            for book in self.books
+        ])
         session.commit()
     
     def get_db_books(self):
@@ -66,5 +66,5 @@ class BookParser:
         self.save_categories()
         self.save_books()
 
-        print(f'{len(self.get_db_categories())}')
-        print(f'{len(self.get_db_books())}')
+        print(f'CATEGORIAS CARGADAS EN BD - {len(self.get_db_categories())}')
+        print(f'LIBROS CARGADOS EN BD- {len(self.get_db_books())}')

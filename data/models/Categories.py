@@ -1,13 +1,14 @@
 from sqlalchemy import Column, String, Integer, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from data.BookContext import Base
+from data.models.Serialize import Serializable
 
-class Category(Base):
+class Category(Base, Serializable):
     __tablename__ = 'categories'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    url = Column(String)
+    name = Column(String, nullable=False)
+    url = Column(String, nullable=False, unique=True)
     book = relationship("Book")
 
     def __init__(self, name, url):

@@ -1,12 +1,13 @@
 from sqlalchemy import Column, String, Integer, Date, Boolean, ForeignKey
 from data.BookContext import Base
+from data.models.Serialize import Serializable
 
-class Book(Base):
+class Book(Base, Serializable):
     __tablename__ = 'books'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String)
-    category_id = Column(String, ForeignKey('categories.id'))
+    title = Column(String, nullable=False)
+    category_id = Column(String, ForeignKey('categories.id'), nullable=False)
     thumbail_url = Column(String)
     price = Column(String)
     stock = Column(Boolean)

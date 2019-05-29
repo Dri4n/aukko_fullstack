@@ -9,6 +9,7 @@ from data.models.Books import Book
 
 class BookParser:
     def __init__(self):
+        # eliminamos y creamos los datos de la base de datos.
         Base.metadata.drop_all(engine)
         Base.metadata.create_all(engine)
 

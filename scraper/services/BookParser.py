@@ -50,6 +50,8 @@ class BookParser:
                 category_id = next(filter(lambda x: x.url == book['category_url'], db_categories), Category).id,
                 thumbail_url = book['thumbail'],
                 price = book['price'],
+                price_tax = book['price_tax'],
+                tax = book['tax'],
                 stock = book['stock'],
                 description = book['description'],
                 upc = book['upc']

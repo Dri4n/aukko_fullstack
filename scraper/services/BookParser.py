@@ -1,5 +1,7 @@
 import sys, os, json
-sys.path.append(os.path.abspath(os.path.join('../', '')))
+current_path = os.path.join(os.path.dirname(__file__), os.path.pardir)
+solution_path = os.path.abspath(os.path.join(current_path, os.path.pardir))
+sys.path.append(solution_path)
 
 from data.BookContext import Session, engine, Base
 from data.models.Categories import Category
@@ -9,7 +11,7 @@ class BookParser:
     def __init__(self):
         Base.metadata.drop_all(engine)
         Base.metadata.create_all(engine)
-        
+
         self.categories = []
         self.books = []
 

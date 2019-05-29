@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date, Boolean
+from sqlalchemy import Column, String, Integer, Date, Boolean, ForeignKey
 from data.BookContext import Base
 
 class Book(Base):
@@ -6,7 +6,7 @@ class Book(Base):
 
     id = Column(Integer, primary_key=True)
     title = Column(String)
-    category_id = Column(String)
+    category_id = Column(String, ForeignKey('categories.id'))
     thumbail_url = Column(String)
     price = Column(String)
     stock = Column(Boolean)

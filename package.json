@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "scraper": "python scraper/Bootstrapper.py",
-    "dev": "python api/main.py"
+    "api": "python api/main.py",
+    "web": "npm run dev --prefix web"
   },
   "repository": {
     "type": "git",

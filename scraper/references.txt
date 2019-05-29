@@ -2,3 +2,5 @@ https://realpython.com/python-concurrency/
 https://towardsdatascience.com/dataset-creation-and-cleaning-web-scraping-using-python-part-1-33afbf360b6b
 https://docs.python.org/3/library/concurrent.futures.html
 https://docs.python.org/2/library/queue.html
+https://dev.to/aligoren/building-basic-restful-api-with-flask-restful-57oh
+https://auth0.com/blog/sqlalchemy-orm-tutorial-for-python-developers/?utm_source=medium&utm_medium=sc&utm_campaign=sqlalchemy_python

@@ -14,6 +14,10 @@
 
 ### Instalación
 
+* pyp3
+```
+sudo apt-get install python3-pip
+```
 * Requests
 ```
 pip3 install requests
@@ -38,14 +42,16 @@ pip3 install sqlalchemy
  npm run scraper
 ```
 
-* Para la ejecciòn del proyecto API se debe ejecutar el comando
+* Para la ejecciòn del proyecto API se debe ejecutar el comando (terminal 1)
 ```
  npm run api
 ```
 
-* Para la ejecciòn del proyecto API se debe ejecutar el comando
+* Para la ejecciòn del proyecto WEB se deben ejecutar los siguientes comandos (terminal 2)
 ```
- npm run web
+  cd web/
+  npm install
+  npm run dev
 ```
 ## Construido con
 

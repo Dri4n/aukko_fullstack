@@ -6,20 +6,24 @@ class Book(Base, Serializable):
     __tablename__ = 'books'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String, nullable=False)
-    category_id = Column(String, ForeignKey('categories.id'), nullable=False)
-    thumbail_url = Column(String)
-    price = Column(String)
-    stock = Column(Boolean)
-    description = Column(String)
-    upc = Column(String)
+    title = Column(String(255), nullable=False)
+    category_id = Column(Integer, ForeignKey('categories.id'), nullable=False)
+    thumbail_url = Column(String(255), nullable=False)
+    price = Column(String(30), nullable=False)
+    price_tax = Column(String(30), nullable=False)
+    tax = Column(String(30), nullable=False)
+    stock = Column(Boolean, nullable=False)
+    description = Column(String(2000), nullable=True)
+    upc = Column(String(20))
 
     def __init__ (
         self, 
         title, 
         category_id, 
         thumbail_url, 
-        price, 
+        price,
+        price_tax,
+        tax,
         stock, 
         description, 
         upc
@@ -28,6 +32,8 @@ class Book(Base, Serializable):
         self.category_id = category_id
         self.thumbail_url = thumbail_url
         self.price = price
+        self.price_tax = price_tax
+        self.tax = tax
         self.stock = stock
         self.description = description
         self.upc = upc

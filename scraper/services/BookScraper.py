@@ -40,8 +40,8 @@ class BookScraper:
         next_page = page_url
 
         #TODO: solucionar problema de lectura de solo la primera pagina, convertir en metodo recursivo.
-        links = 1
-        while links > 0:
+        categories = 10
+        while categories > 0:
             response = self.scrape(next_page)
             soup = BeautifulSoup(response.text, 'html.parser')
             next_link = soup.select('li.next a[href]')
@@ -54,7 +54,7 @@ class BookScraper:
                     for page_book in page_books:
                         page_book_url = page_book['href']
                         self.crawl_books_queue.put(self.link_to_absolute_path(page_book_url))
-                links-=1
+                categories-=1
             else:
                 break
 

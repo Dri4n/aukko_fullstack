@@ -28,21 +28,31 @@ class BookSoupMapper:
         self.set_information()
 
     def set_title(self):
+        title = None
         if (self.title_element is not None):
-            self.title = self.title_element.get_text()
+            title = self.title_element.get_text()
+        self.title = title
     
     def set_thumbail(self):
+        thumbail = None
         if (self.thumbail_element is not None):
-            self.thumbail = self.thumbail_element.attrs['src']
+            thumbail = self.thumbail_element.attrs['src']
+        self.thumbail = thumbail
 
     def set_category(self):
+        category = None
+        category_url = None
         if (self.category_element is not None):
-            self.category = self.category_element.a.get_text()
-            self.category_url = self.category_element.a.attrs['href']
+            category = self.category_element.a.get_text()
+            category_url = self.category_element.a.attrs['href']
+        self.category = category
+        self.category_url = category_url
     
     def set_description(self):
+        description = None
         if (self.description_element is not None):
-            self.description = self.description_element.get_text()
+            description = self.description_element.get_text()
+        self.description = description
     
     def set_information(self):
         self.price = 1000

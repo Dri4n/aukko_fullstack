@@ -50,7 +50,7 @@ class BookScraper:
                 page_books = soup.select('article.product_pod > h3 > a[href]')
                 page_books_len = len(page_books)
                 if (page_books_len):
-                    print('INSERT TO QUEUE {} BOOKS FROM PAGE {}'.format(page_books_len, next_page))
+                    # print('INSERTANDO A LA COLA {} LIBROS DESDE LA PAGINA {}'.format(page_books_len, next_page))
                     for page_book in page_books:
                         page_book_url = page_book['href']
                         self.crawl_books_queue.put(self.link_to_absolute_path(page_book_url))
@@ -59,12 +59,15 @@ class BookScraper:
                 break
 
     #INFO: metodo de ayuda con el cual se convierte una ruta relativa en ruta absoluta.
-    def link_to_absolute_path(self, relative_path):
+    def link_to_absolute_path(self, relative_path, is_catalogue_url = True):
         absolute_path = self.base_url
-        if ('catalogue' in relative_path):
-            absolute_path = urljoin(absolute_path, relative_path)
+        if is_catalogue_url == True:
+            if ('catalogue' in relative_path):
+                absolute_path = urljoin(absolute_path, relative_path)
+            else:
+                absolute_path = urljoin(absolute_path + '/catalogue/', relative_path.replace('../', ''))
         else:
-            absolute_path = urljoin(absolute_path + '/catalogue/', relative_path)
+            absolute_path = urljoin(absolute_path, relative_path)
         return absolute_path
 
     def read_book_info(self, html):
@@ -74,13 +77,15 @@ class BookScraper:
             mapper.title,
             mapper.category,
             self.link_to_absolute_path(mapper.category_url),
-            self.link_to_absolute_path(mapper.thumbail),
+            self.link_to_absolute_path(mapper.thumbail, False),
             mapper.price, #TODO: leer precio
             mapper.stock, #TODO: leer stock
             mapper.description,
             mapper.upc #TODO: leer upc
         )
+        # print(f'LEYENDO INFORMACIÓN LIBRO - {book_entity.title}')
         self.books_data_set.append(book_entity)
+        
 
     def scrape_book_response(self, res):
         result = res.result()

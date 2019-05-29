@@ -39,27 +39,25 @@ class BookScraper:
         self.categories_data_set.extend(categories)
 
     #INFO: metodo en el cual se enconlan los libros a realizar scraping.
-    def read_pages(self, page_url):
-        next_page = page_url
-
-        #TODO: solucionar problema de lectura de solo la primera pagina, convertir en metodo recursivo.
-        categories = 10
-        while categories > 0:
-            response = self.scrape(next_page)
+    def read_pages(self, page):
+        if page is not None:
+            response = self.scrape(page)
             soup = BeautifulSoup(response.content, 'html.parser')
+            page_books = soup.select('article.product_pod > h3 > a[href]')
+            page_books_len = len(page_books)
+            if (page_books_len):
+                print('INSERTANDO A LA COLA {} LIBROS DESDE LA PAGINA {}'.format(page_books_len, page))
+                for page_book in page_books:
+                    page_book_url = page_book['href']
+                    self.crawl_books_queue.put(self.link_to_absolute_path(page_book_url))
+            
             next_link = soup.select('li.next a[href]')
-            if len(next_link):
+            if  next_link is not None and len(next_link):
                 next_page = self.link_to_absolute_path(next_link[0]['href'])
-                page_books = soup.select('article.product_pod > h3 > a[href]')
-                page_books_len = len(page_books)
-                if (page_books_len):
-                    # print('INSERTANDO A LA COLA {} LIBROS DESDE LA PAGINA {}'.format(page_books_len, next_page))
-                    for page_book in page_books:
-                        page_book_url = page_book['href']
-                        self.crawl_books_queue.put(self.link_to_absolute_path(page_book_url))
-                categories-=1
+                return self.read_pages(next_page)
             else:
-                break
+                return self.read_pages(None)
+        return None
 
     #INFO: metodo de ayuda con el cual se convierte una ruta relativa en ruta absoluta.
     def link_to_absolute_path(self, relative_path, is_catalogue_url = True):
@@ -86,8 +84,7 @@ class BookScraper:
             mapper.description,
             mapper.upc #TODO: leer upc
         )
-        
-        # print(f'LEYENDO INFORMACIÓN LIBRO - {book_entity.title}')
+
         self.books_data_set.append(book_entity)
         
 
@@ -109,7 +106,7 @@ class BookScraper:
         #INFO: proceso de carga de libros encolados para lectura
         while True:
             try:
-                book_url = self.crawl_books_queue.get(timeout=10)
+                book_url = self.crawl_books_queue.get(timeout=60)
                 if book_url not in self.readed_books:
                     self.readed_books.add(book_url)
                     process = self.pool.submit(self.scrape, book_url)

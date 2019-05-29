@@ -1,3 +1,6 @@
+import sys, os
+current_path = os.path.join(os.path.dirname(__file__), os.path.pardir)
+
 import requests, re, json, codecs
 
 from bs4 import BeautifulSoup
@@ -114,11 +117,11 @@ class BookScraper:
             except Empty:
                 if (len(self.books_data_set)):
                     json_string = json.dumps([ob.__dict__ for ob in self.books_data_set], ensure_ascii=False)
-                    with codecs.open('data/books.json', 'w', encoding='utf-8') as f:
+                    with codecs.open(current_path + '/data/books.json', 'w', encoding='utf-8') as f:
                         f.write(json_string)
                 if (len(self.categories_data_set)):
                     json_string = json.dumps([ob.__dict__ for ob in self.categories_data_set], ensure_ascii=False)
-                    with codecs.open('data/categories.json', 'w', encoding='utf-8') as f:
+                    with codecs.open(current_path + '/data/categories.json', 'w', encoding='utf-8') as f:
                         f.write(json_string)
                 return
             except Exception as e:

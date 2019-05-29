@@ -16,9 +16,9 @@ class BookParser:
         self.books = []
 
     def load_data(self):
-        with open('data/categories.json', 'r', encoding='utf-8') as f:  
+        with open(current_path + '/data/categories.json', 'r', encoding='utf-8') as f:  
            self.categories = json.load(f)
-        with open('data/books.json', 'r', encoding='utf-8') as f:  
+        with open(current_path + '/data/books.json', 'r', encoding='utf-8') as f:  
            self.books = json.load(f)
 
     def save_categories(self):

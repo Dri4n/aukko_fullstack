@@ -17,6 +17,7 @@ class BookScraper:
     def __init__(self, base_url):
         self.base_url = base_url
         self.pool = ThreadPoolExecutor(max_workers=20)
+        self.tasks_num = 0
 
         self.readed_pages = set([])
         self.readed_books = set([])
@@ -39,7 +40,7 @@ class BookScraper:
         self.categories_data_set.extend(categories)
 
     #INFO: metodo en el cual se enconlan los libros a realizar scraping.
-    def read_pages(self, page):
+    def read_pages(self, page, page_count = 0):
         if page is not None:
             response = self.scrape(page)
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -50,11 +51,12 @@ class BookScraper:
                 for page_book in page_books:
                     page_book_url = page_book['href']
                     self.crawl_books_queue.put(self.link_to_absolute_path(page_book_url))
-            
+
             next_link = soup.select('li.next a[href]')
             if  next_link is not None and len(next_link):
                 next_page = self.link_to_absolute_path(next_link[0]['href'])
-                return self.read_pages(next_page)
+                page_count += 1
+                return self.read_pages(next_page, page_count)
             else:
                 return self.read_pages(None)
         return None
@@ -79,13 +81,17 @@ class BookScraper:
             mapper.category,
             self.link_to_absolute_path(mapper.category_url),
             self.link_to_absolute_path(mapper.thumbail, False),
-            mapper.price, #TODO: leer precio
-            mapper.stock, #TODO: leer stock
+            mapper.price,
+            mapper.price_tax,
+            mapper.tax,
+            mapper.stock,
             mapper.description,
-            mapper.upc #TODO: leer upc
+            mapper.upc
         )
 
+        print(f'READ BOOK INFO {book_entity.title}')
         self.books_data_set.append(book_entity)
+        self.tasks_num -= 1
         
 
     def scrape_book_response(self, res):
@@ -96,7 +102,7 @@ class BookScraper:
     def scrape(self, url):
         res = requests.get(url)
         return res
-
+    
     def run(self):
         #INFO: proceso de lectura de categorias
         self.read_categories(self.base_url)
@@ -104,14 +110,23 @@ class BookScraper:
         self.read_pages(self.base_url)
 
         #INFO: proceso de carga de libros encolados para lectura
-        while True:
+        while not self.crawl_books_queue.empty():
             try:
                 book_url = self.crawl_books_queue.get(timeout=60)
                 if book_url not in self.readed_books:
+                    self.tasks_num += 1
                     self.readed_books.add(book_url)
                     process = self.pool.submit(self.scrape, book_url)
                     process.add_done_callback(self.scrape_book_response)
             except Empty:
+                return
+            except Exception as e:
+                print(e)
+                continue
+
+        while True:
+            if self.tasks_num == 0:
+                self.pool.shutdown(True)
                 if (len(self.books_data_set)):
                     json_string = json.dumps([ob.__dict__ for ob in self.books_data_set], ensure_ascii=False)
                     with codecs.open(current_path + '/data/books.json', 'w', encoding='utf-8') as f:
@@ -120,7 +135,6 @@ class BookScraper:
                     json_string = json.dumps([ob.__dict__ for ob in self.categories_data_set], ensure_ascii=False)
                     with codecs.open(current_path + '/data/categories.json', 'w', encoding='utf-8') as f:
                         f.write(json_string)
-                return
-            except Exception as e:
-                print(e)
-                continue
+                break
+            else:
+                pass

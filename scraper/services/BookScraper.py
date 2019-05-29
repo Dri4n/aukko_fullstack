@@ -26,7 +26,7 @@ class BookScraper:
 
     def read_categories(self, page_url):
         response = self.scrape(page_url)
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.content, 'html.parser')
         categories = [
             Category(category.get_text().strip(), self.link_to_absolute_path(category.get('href')), 'books') 
             for category
@@ -43,7 +43,7 @@ class BookScraper:
         categories = 10
         while categories > 0:
             response = self.scrape(next_page)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            soup = BeautifulSoup(response.content, 'html.parser')
             next_link = soup.select('li.next a[href]')
             if len(next_link):
                 next_page = self.link_to_absolute_path(next_link[0]['href'])
@@ -83,6 +83,7 @@ class BookScraper:
             mapper.description,
             mapper.upc #TODO: leer upc
         )
+        
         # print(f'LEYENDO INFORMACIÓN LIBRO - {book_entity.title}')
         self.books_data_set.append(book_entity)
         
@@ -90,7 +91,7 @@ class BookScraper:
     def scrape_book_response(self, res):
         result = res.result()
         if result and result.status_code == 200:
-            self.read_book_info(result.text)
+            self.read_book_info(result.content)
 
     def scrape(self, url):
         res = requests.get(url)
@@ -113,11 +114,11 @@ class BookScraper:
             except Empty:
                 if (len(self.books_data_set)):
                     json_string = json.dumps([ob.__dict__ for ob in self.books_data_set], ensure_ascii=False)
-                    with open('data/books.json', 'w', encoding='utf-8') as f:
+                    with codecs.open('data/books.json', 'w', encoding='utf-8') as f:
                         f.write(json_string)
                 if (len(self.categories_data_set)):
                     json_string = json.dumps([ob.__dict__ for ob in self.categories_data_set], ensure_ascii=False)
-                    with open('data/categories.json', 'w', encoding='utf-8') as f:
+                    with codecs.open('data/categories.json', 'w', encoding='utf-8') as f:
                         f.write(json_string)
                 return
             except Exception as e:

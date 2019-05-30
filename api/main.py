@@ -80,7 +80,16 @@ def search_books():
 
 @app.route("/api/v1/books/<book_id>/delete", methods=['DELETE'])
 def delete_book(book_id):
-    return book_id
+    session = Session(bind=engine)
+    book_entity = session.query(Book).get(book_id)
+    if book_entity is not None:
+        session.delete(book_entity)
+        session.commit()
+        session.close()
+        return jsonify({ 'success': True })
+    else:
+        return jsonify({ 'success': False })
+    
 
 if __name__ == '__main__':
     app.run(host='localhost', port=3000, debug=True)

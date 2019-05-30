@@ -1,5 +1,39 @@
 # Test Fullstack Aukko - Carlos Orostegui
 
+## Descripción
+
+La solución se compone de 4 proyectos, estos proyectos son:
+
+* api
+* data
+* scraper
+* web
+
+### Proyecto API
+
+Encargado de entregar las categorias y libros cargados por el servicio scraper.
+
+### Proyecto DATA
+
+Encargado la implementación de la libreria SQLAlchemy, contiene los modelos y el contexto principal.
+
+### Proyecto SCRAPER
+
+Encargado de obtener los datos desde la web http://books.toscrape.com, se compone principlamente de 2 servicios:
+
+* BookScraper
+* BookParser
+
+El servicio BookScraper se encarga de leer el html correspondiente a los libros y categorias de la web, este servicio una vez finalizadas todas sus solicitudes guarda los datos en la carpeta data (categories.json y books.json).
+
+El servicio BookParser se encarga de leer los datos recopilados por el servicio BookScraper y cargalos en BD, como caso practico cada vez que el servicio
+BookParser es utilizado, se eliminan y se carga la metadata de la base de datos, este servicio solo cuenta con lógica de carga y no con lógica
+de actualización.
+
+### Proyecto WEB
+
+Encargado de visualizar los datos obtenidos desde el proyecto API.
+
 ##  Instrucciones
 
 ### Pre-requisitos

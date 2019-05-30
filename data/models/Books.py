@@ -1,7 +1,9 @@
-from sqlalchemy import Column, String, Integer, Date, Boolean, ForeignKey
+import datetime
+from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
 from data.BookContext import Base
 from data.models.Serialize import Serializable
+from data.models.Categories import Category
 
 class Book(Base, Serializable):
     __tablename__ = 'books'
@@ -16,8 +18,9 @@ class Book(Base, Serializable):
     stock = Column(Boolean, nullable=False)
     description = Column(String(2000), nullable=True)
     upc = Column(String(20))
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
-    category = relationship("Category", back_populates="book")
+    category = relationship(Category, primaryjoin=category_id == Category.id)
 
     def __init__ (
         self, 

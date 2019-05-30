@@ -46,7 +46,7 @@ def search_books():
 
     session = Session(bind=engine)
     query = session.query(Book).join(Book.category)
-    if categoryId is not None and categoryId > 0:
+    if categoryId is not None and int(categoryId) > 0:
         query = query.filter(Book.category_id == categoryId)
     if search_text is not None and len(search_text):
         search_text = f'%{search_text.strip()}%'

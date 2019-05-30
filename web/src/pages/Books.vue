@@ -40,8 +40,8 @@
                     :options="table.options"
                     pagination-path="">
                     <a :href="props.row.category.url" slot="category" slot-scope="props" target="_blank">{{ props.row.category.name }}</a>
-                    <ul slot="actions" class="list-inline">
-                        <li class="list-inline-item"><button class="btn btn-danger btn-sm">Eliminar</button></li>
+                    <ul slot="actions" slot-scope="props" class="list-inline">
+                        <li class="list-inline-item"><button class="btn btn-danger btn-sm" @click="removeBook(props.row.id)">Eliminar</button></li>
                     </ul>
                 </v-server-table>
             </div>
@@ -75,15 +75,16 @@ export default {
                 perPageValues: [5],
                 filterable: false,
                 perPage: 5,
-                sortable: ['title', 'category', 'price', 'tax'],
                 skin: 'table table-sm table-striped',
+                sortable: ['id', 'title', 'price'],
                 headings: {
                     id: 'ID',
                     title: 'Titulo',
                     category: 'Categoria',
                     price: 'Precio',
                     tax: 'Impuesto',
-                    upc: 'UPC'
+                    upc: 'UPC',
+                    actions: ''
                 },
                 texts: {
                     filterPlaceholder: 'Búsqueda ',
@@ -104,6 +105,17 @@ export default {
     methods: {
         search() {
            this.$refs.books.refresh()
+        },
+        removeBook(bookId) {
+            this.axios.delete(`api/v1/books/${bookId}/delete`).then((response) => {
+               let data = response.data;
+               if (data.success === true) {
+                   this.search()
+               }
+               else {
+                   alert('Ha ocurrido un error al procesar su solicitud.')
+               }
+            })
         },
         searchBooks(criteria) {
            criteria.categoryId = this.filters.category

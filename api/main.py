@@ -34,7 +34,7 @@ def search_books():
     limit = data.get('limit')
     ascending = data.get('ascending')
     page = data.get('page')
-    byColumn = data.get('byColumn')
+    orderBy = data.get('orderBy')
     categoryId = data.get('categoryId')
     
     if limit is None:
@@ -46,6 +46,21 @@ def search_books():
 
     session = Session(bind=engine)
     query = session.query(Book).join(Book.category)
+    if orderBy is not None:
+        column = None
+        if orderBy == 'id':
+            column = Book.id
+        elif orderBy == 'title':
+            column = Book.title
+        elif orderBy == 'price':
+            column = Book.price
+
+        if column is not None:
+            if ascending == 0:
+                query = query.order_by(column.desc())
+            else:
+                query = query.order_by(column.asc())
+
     if categoryId is not None and int(categoryId) > 0:
         query = query.filter(Book.category_id == categoryId)
     if search_text is not None and len(search_text):

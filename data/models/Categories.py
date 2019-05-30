@@ -1,4 +1,5 @@
-from sqlalchemy import Column, String, Integer, Date, ForeignKey
+import datetime
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from data.BookContext import Base
 from data.models.Serialize import Serializable
@@ -9,7 +10,8 @@ class Category(Base, Serializable):
     id = Column(Integer, primary_key=True)
     name = Column(String(50), nullable=False)
     url = Column(String(255), nullable=False, unique=True)
-    book = relationship("Book")
+    books = relationship("Book", backref="user", lazy='subquery')
+    created_at = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
     def __init__(self, name, url):
         self.name = name

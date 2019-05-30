@@ -39,6 +39,10 @@
                     :columns="table.columns"
                     :options="table.options"
                     pagination-path="">
+                    <a :href="props.row.category.url" slot="category" slot-scope="props" target="_blank">{{ props.row.category.name }}</a>
+                    <ul slot="actions" class="list-inline">
+                        <li class="list-inline-item"><button class="btn btn-danger btn-sm">Eliminar</button></li>
+                    </ul>
                 </v-server-table>
             </div>
         </div>
@@ -62,18 +66,16 @@ export default {
                 'category',
                 'price',
                 'tax',
-                'upc'
+                'upc',
+                'actions'
             ],
             options: {
                 requestFunction: this.searchBooks,
                 responseAdapter: this.searchBooksTransform,
-                pagination:{
-                    dropdown: false,
-                },
                 perPageValues: [5],
                 filterable: false,
                 perPage: 5,
-                sortable: ['name', 'active', 'created_at'],
+                sortable: ['title', 'category', 'price', 'tax'],
                 skin: 'table table-sm table-striped',
                 headings: {
                     id: 'ID',

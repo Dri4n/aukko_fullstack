@@ -72,22 +72,27 @@ pip3 install sqlalchemy
 
 ## Despliegue
 
-* Para la ejecución del proyecto scraper se debe ejecutar el comando
+#### Para la ejeución de los proyectos scraper y api, se debe ejecutar desde la ruta base del proyecto.
+
+* script ejecución proyecto scraper
 ```
  npm run scraper
 ```
 
-* Para la ejecciòn del proyecto API se debe ejecutar el comando (terminal 1), el proyecto será ejectuado en localhost:3000
+* script ejecución proyecto api (montado en localhost:3000)
 ```
  npm run api
 ```
 
-* Para la ejecciòn del proyecto WEB se deben ejecutar los siguientes comandos (terminal 2), el proyecto será ejecutado en localhost:8080
+#### Para la ejecución del proyecto web, se debe ejecutar desde la ruta web/ del proyecto.
+
+* script ejecución proyecto web (montado en localhost:8080)
 ```
   cd web/
   npm install
   npm run dev
 ```
+
 ## Construido con
 
 * Backend

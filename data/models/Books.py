@@ -1,4 +1,5 @@
 from sqlalchemy import Column, String, Integer, Date, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 from data.BookContext import Base
 from data.models.Serialize import Serializable
 
@@ -15,6 +16,8 @@ class Book(Base, Serializable):
     stock = Column(Boolean, nullable=False)
     description = Column(String(2000), nullable=True)
     upc = Column(String(20))
+
+    category = relationship("Category", back_populates="book")
 
     def __init__ (
         self, 

@@ -9,6 +9,7 @@
 * Libreria BeautifulSoup
 * Libreria SQLAlchemy
 * Libreria Flask-RESTful
+* Libreria Flask-Cors
 
 * NodeJS (v10.9.0) (version recomendada)
 
@@ -32,7 +33,8 @@ pip3 install sqlalchemy
 ```
 * Flask-RESTful
 ```
- pip install flask-restful
+ pip3 install flask-restful
+ pip3 install -U flask-cors
 ```
 
 ## Despliegue
@@ -42,12 +44,12 @@ pip3 install sqlalchemy
  npm run scraper
 ```
 
-* Para la ejecciòn del proyecto API se debe ejecutar el comando (terminal 1)
+* Para la ejecciòn del proyecto API se debe ejecutar el comando (terminal 1), el proyecto será ejectuado en localhost:3000
 ```
  npm run api
 ```
 
-* Para la ejecciòn del proyecto WEB se deben ejecutar los siguientes comandos (terminal 2)
+* Para la ejecciòn del proyecto WEB se deben ejecutar los siguientes comandos (terminal 2), el proyecto será ejecutado en localhost:8080
 ```
   cd web/
   npm install
